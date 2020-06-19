@@ -1,0 +1,28 @@
+html,
+body {
+    height: 100%;
+    width: 100%;
+
+}
+
+.homo-cta {
+   background-image: url('/images/background.jpg');
+    background-size: cover;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.homo-cta > h1{
+    color: #fff;
+    text-shadow: 2px 2px 3px rgba(0, 0 0, 0.5);
+    font-size: 5rem;
+    text-align: center;
+}
+
+
+
+
+
