@@ -28,11 +28,39 @@ const bodyParser = require('body-parser');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 
+// Setup our session
+const session = require('express-session');
+app.use(session({
+    secret: 'any salty secret here',
+    resave: true,
+    saveUninitialized: false,
+}));
+
+//Setup flash notification
+const flash = require('connect-flash');
+app.use(flash());
+app.use('/', (req, res, next) => {
+    //setting default locals
+    res.locals.pageTitle = "Untitled";
+
+    //console.log(flash());
+    
+    // Passing along flash messages
+    res.locals.flash = req.flash();
+    res.locals.formData = req.session.formData || {};
+    req.session.formData = {};
+    console.log(res.locals.flash);
+
+    next();
+});
+
 // our routes
 const routes = require('./routes.js');
 app.use('/',routes);
 
 //start up our server
-app.listen(process.env.PORT || 3000, port => console.log(
+const port = process.env.PORT || 3000;
+app.listen(port, () => console.log(
     `Listening on port ${port}`));
 
+ 

@@ -5,8 +5,9 @@ body {
 
 }
 
-.homo-cta {
-   background-image: url('/images/background.jpg');
+.home-cta {
+    background: url('/images/background.jpg');
+    background-color: black;
     background-size: cover;
     height: 100%;
     width: 100%;
@@ -15,14 +16,34 @@ body {
     align-items: center;
 }
 
-.homo-cta > h1{
+.home-cta > h1{
     color: #fff;
     text-shadow: 2px 2px 3px rgba(0, 0 0, 0.5);
     font-size: 5rem;
     text-align: center;
 }
 
+.form-inline{
+    display: inline-block;
+    margin: 0;
+    padding: 0;
+}
 
+a{
+    text-decoration: none;
+}
+
+.form-inline > .delete{
+    border: none;
+    background: none;
+    color: #007bff;
+    margin: 0;
+    padding: 0;
+}
+
+.form-inline > .delete:hover {
+    color: #0056b3;
+}
 
 
 

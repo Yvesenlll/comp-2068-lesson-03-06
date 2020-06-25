@@ -5,7 +5,7 @@ module.exports = router => {
     router.get('/blogs/new', _new);
     router.post('/blogs', create);
     router.post('/blogs/update', update);
-    router.post('/blogs/detele',_delete);
+    router.post('/blogs/delete',_delete);
     router.get('/blogs/:id/edit', edit);
     router.get('/blogs/:id', show);
 }

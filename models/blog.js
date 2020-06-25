@@ -30,6 +30,14 @@ BlogSchema.query.drafts = function () {
         status: 'PUBLISHED'
     })
 };
+
+BlogSchema.virtual('synopsts')
+.get(function(){
+    const post = this.content;
+    return post
+    .replace(/(<([^>]+)>)/ig,"")
+    .substring(0,250);
+});
       
 module.exports = mongoose.model('Blog', BlogSchema);
 
