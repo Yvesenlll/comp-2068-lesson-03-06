@@ -1,10 +1,12 @@
 const viewPath = ('blogs');
 const Blog = require('../models/blog');
+const User = require('../models/user');
 
 exports.index = async (req, res) => {
     try{
         const blogs = await Blog
         .find()
+        .populate('user')
         .sort({updatedAt: 'desc'});
 
         res.render(`${viewPath}/index`, {
@@ -20,7 +22,8 @@ exports.index = async (req, res) => {
 exports.show = async (req, res) => {
     try {
         // console.log(req.params);
-    const blog = await Blog.findById(req.params.id);
+    const blog = await Blog.findById(req.params.id)
+    .populate('user');
     // req.flash('success', 'test 123');
      res.render(`${viewPath}/show`, {
          pageTitle: blog.title,
@@ -34,12 +37,14 @@ exports.show = async (req, res) => {
 };
 
 exports.new = (req,res) => {
+
     res.render(`${viewPath}/new`, {
         pageTitle: "New Log"
     });
 };
 
 exports.create = async (req,res) => {
+
     console.log(`Blog body: ${JSON.stringify(req.body, null, 2)}`);
     
     //delete req.body.title;
@@ -55,7 +60,9 @@ exports.create = async (req,res) => {
 
     // in case there will be some errors, we use try catch
     try {
-        const blogID = await Blog.create(req.body);        
+        const {user: email} = req.session.passport;
+        const user = await user.findOne({email: email});
+        const blogID = await Blog.create({user: user._id, ...req.body});        
         req.flash('success', 'Blog created successfully');
         
         res.redirect(`/blogs/${blogID.id}`);
@@ -68,6 +75,7 @@ exports.create = async (req,res) => {
 };
 
 exports.edit = async (req, res) => {
+
     try {
         const blog = await Blog.findById(req.params.id);
      // req.flash('success', 'test 123');
@@ -83,11 +91,19 @@ exports.edit = async (req, res) => {
 
 exports.update = async (req, res) => {
     try {
-      let blog = await Blog.findById(req.body.id);
-      if (!blog) throw new Error('Blog could not be found');
-  
-      await Blog.validate(req.body);
-      await Blog.updateOne(req.body);
+        const {user: email} = req.session.passport;
+        const user = await user.findOne({email: email});
+
+        let blog = await Blog.findById(req.body.id);
+        if (!blog) throw new Error('Blog could not be found');
+        
+        const attributes = {user: user._id, ...req.body};
+
+    //   await Superhero.validate(req.body);
+    //   await Superhero.updateOne({_id: req.body.id}, {name: req.body.name, alias: req.body.alias});
+    await Blog.validate(req.body);
+    // await Blog.updateOne({_id: req.body.id}, req.body);
+    await Blog.findByIdAndUpdate(req.body.id, req.body)
   
       req.flash('success', 'The blog was updated successfully');
       res.redirect(`/blogs/${req.body.id}`);
@@ -99,7 +115,7 @@ exports.update = async (req, res) => {
 
 
 exports.delete = async (req, res) => {
-        try {
+    try {
           console.log(req.body);
           await Blog.deleteOne({_id: req.body.id});
           req.flash('success', 'The blog was deleted successfully');

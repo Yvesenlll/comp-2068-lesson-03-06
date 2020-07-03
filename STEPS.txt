@@ -1,0 +1,19 @@
+1)  UserModel - defines our user documents
+    - first name 
+    - last name
+    - email address
+    - (phone, ...)
+    - password
+
+2) UserController - define our actions 
+    - new(register)
+    - create 
+    
+3) User Views - define the visual pages
+    - new (register)
+
+4) User Routes - defines the path to the controller
+    - GET route to new(_new)
+    - POST route to create
+    
+5) Register the routes with the route composer
