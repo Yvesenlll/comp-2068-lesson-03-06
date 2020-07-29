@@ -46,26 +46,18 @@ exports.new = (req,res) => {
 exports.create = async (req,res) => {
 
     console.log(`Blog body: ${JSON.stringify(req.body, null, 2)}`);
-    
-    //delete req.body.title;
-    //  Blog.create(
-    //     //{ title: req.body.title,
-    //     // content: req.body.content,
-    //     // status: req.body.status}
-    //     req.body).then(blog => {
-    //         console.log(blog);
-    //     }).catch(err => {
-    //         console.log(`ERROR: ${err}`);
-    //     });
 
     // in case there will be some errors, we use try catch
     try {
-        const {user: email} = req.session.passport;
-        const user = await user.findOne({email: email});
-        const blogID = await Blog.create({user: user._id, ...req.body});        
+
+        console.log(req.session.passport);
+        const { user: email } = req.session.passport;
+        const user = await User.findOne({email: email});
+        console.log('User', user);
+        const blog = await Blog.create({user: user._id, ...req.body});
+    
         req.flash('success', 'Blog created successfully');
-        
-        res.redirect(`/blogs/${blogID.id}`);
+        res.redirect(`/blogs/${blog.id}`);
     } catch (error) {
         req.flash('danger', `There was an error creating the blog: ${error}`);
         req.session.formData = req.body;

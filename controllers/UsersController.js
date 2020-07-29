@@ -20,7 +20,6 @@ exports.create = async (req,res) =>{
         req.flash('danger', error.message);
         req.session.formData = req.body;
         res.redirect(`register`);
-
     }
 };
 

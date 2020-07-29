@@ -14,7 +14,9 @@
         <small>
             <%= (blog.updatedAt.toLocaleString("en-CA")) %> 
         </small>
+        <% if(typeof blog.user !== 'undefined') {%>
         <p><strong>By: <%= blog.user.fullname %></strong></p>
+        <%}%>
     </header>
     <hr>
 

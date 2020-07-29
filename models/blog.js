@@ -6,8 +6,6 @@ const BlogSchema = new mongoose.Schema({
         ref: 'User',
         required: true
     },
-
-
     title: {
         type: String,
         required: true // this must exist
@@ -32,7 +30,7 @@ BlogSchema.query.drafts = function () {
     })
 };
 
-BlogSchema.query.drafts = function () {
+BlogSchema.query.published = function () {
     return this.where({
         status: 'PUBLISHED'
     })

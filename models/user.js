@@ -26,9 +26,8 @@ const UserSchema = new mongoose.Schema({
                     const emailCount = await this.model('User').count({email: value});
                     return !emailCount;
                 },
-                message: props => `${props.value} exists. Pleasr try a new email or login`
+                message: props => `${props.value} exists. Please try a new email or login`
             }
-
         ]
     }
 },{
@@ -36,7 +35,8 @@ const UserSchema = new mongoose.Schema({
 });
 
 //Validation attributes
-UserSchema.virtual('emailConfirmation').get(function () {
+UserSchema.virtual('emailConfirmation')
+.get(function () {
     return this._emailConfirmation;
 })
 .set(function (value) {
@@ -70,7 +70,5 @@ UserSchema.virtual('fullname').get(
 UserSchema.plugin(passportLocalMongoose, {
     usernameField: 'email'
 });
-
-
 
 module.exports = mongoose.model('User', UserSchema);
