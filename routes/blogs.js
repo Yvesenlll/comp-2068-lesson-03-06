@@ -2,8 +2,7 @@ const {new: _new,index, show, create, edit, update, delete:_delete }= require('.
 
 function auth (req, res, next, message, redirectPath){
     if(!req.isAuthenticated()){
-        req.flash('danger', message);
-        return res.redirect(redirectPath);
+        return res.status(401).json({message:"You must authenticate before sing this API call"});
     }
 next();
 }

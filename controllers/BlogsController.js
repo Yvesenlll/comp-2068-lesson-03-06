@@ -1,121 +1,91 @@
-const viewPath = ('blogs');
+const viewPath = 'blogs';
 const Blog = require('../models/blog');
 const User = require('../models/user');
 
 exports.index = async (req, res) => {
-    try{
-        const blogs = await Blog
-        .find()
-        .populate('user')
-        .sort({updatedAt: 'desc'});
+  try {
+    const blogs = await Blog
+      .find()
+      .populate('user')
+      .sort({updatedAt: 'desc'});
 
-        res.render(`${viewPath}/index`, {
-        pageTitle: 'Archive',
-        blogs: blogs
-        }); 
-    }catch(error){
-        req.flash('danger', `There was an error displaying the archive: ${error}`)
-        res.redirect('/')
-    }
+    res.status(200).json(blogs);
+  } catch (error) {
+    res.status(400).json({message: 'There was an error fetching the blogs', error});
+  }
 };
 
 exports.show = async (req, res) => {
-    try {
-        // console.log(req.params);
+  try {
     const blog = await Blog.findById(req.params.id)
-    .populate('user');
-    // req.flash('success', 'test 123');
-     res.render(`${viewPath}/show`, {
-         pageTitle: blog.title,
-         blog: blog
-     });
-    } catch (error) {
-        req.flash('danger', `There was an error displaying the blog: ${error}`)
-        res.redirect('/')
-    }
+      .populate('user');
     
+    res.status(200).json(blog);
+  } catch (error) {
+    res.status(400).json({message: "There was an error fetching the blog"});
+  }
 };
 
-exports.new = (req,res) => {
-
-    res.render(`${viewPath}/new`, {
-        pageTitle: "New Log"
-    });
+exports.new = (req, res) => {
+  res.render(`${viewPath}/new`, {
+    pageTitle: 'New Blog'
+  });
 };
 
-exports.create = async (req,res) => {
-
-    console.log(`Blog body: ${JSON.stringify(req.body, null, 2)}`);
-
-    // in case there will be some errors, we use try catch
-    try {
-
-        console.log(req.session.passport);
-        const { user: email } = req.session.passport;
-        const user = await User.findOne({email: email});
-        console.log('User', user);
-        const blog = await Blog.create({user: user._id, ...req.body});
+exports.create = async (req, res) => {
+  console.log(req.body);
+  try {
+    const { user: email } = req.session.passport;
+    const user = await User.findOne({email: email});
     
-        req.flash('success', 'Blog created successfully');
-        res.redirect(`/blogs/${blog.id}`);
-    } catch (error) {
-        req.flash('danger', `There was an error creating the blog: ${error}`);
-        req.session.formData = req.body;
-        res.redirect('blogs/new');
-    }
+    const blog = await Blog.create({user: user._id, ...req.body});
 
+    res.status(200).json(blog);
+  } catch (error) {
+    res.status(400).json({message: "There was an error creating the blog post", error});
+  }
 };
 
 exports.edit = async (req, res) => {
-
-    try {
-        const blog = await Blog.findById(req.params.id);
-     // req.flash('success', 'test 123');
-        res.render(`${viewPath}/edit`, {
-        pageTitle: blog.title,
-        formData: blog
-     });
-    } catch (error) {
-        req.flash('danger', `There was an error accessing the blog: ${error}`)
-        res.redirect('/')
-    }
+  try {
+    const blog = await Blog.findById(req.params.id);
+    res.render(`${viewPath}/edit`, {
+      pageTitle: blog.title,
+      formData: blog
+    });
+  } catch (error) {
+    req.flash('danger', `There was an error accessing this blog: ${error}`);
+    res.redirect('/');
+  }
 };
 
 exports.update = async (req, res) => {
-    try {
-        const {user: email} = req.session.passport;
-        const user = await user.findOne({email: email});
+  try {
+    const { user: email } = req.session.passport;
+    const user = await User.findOne({email: email});
 
-        let blog = await Blog.findById(req.body.id);
-        if (!blog) throw new Error('Blog could not be found');
-        
-        const attributes = {user: user._id, ...req.body};
+    let blog = await Blog.findById(req.body.id);
+    if (!blog) throw new Error('Blog could not be found');
 
-    //   await Superhero.validate(req.body);
-    //   await Superhero.updateOne({_id: req.body.id}, {name: req.body.name, alias: req.body.alias});
-    await Blog.validate(req.body);
-    // await Blog.updateOne({_id: req.body.id}, req.body);
-    await Blog.findByIdAndUpdate(req.body.id, req.body)
-  
-      req.flash('success', 'The blog was updated successfully');
-      res.redirect(`/blogs/${req.body.id}`);
-    } catch (error) {
-      req.flash('danger', `There was an error updating this blog: ${error}`);
-      res.redirect(`/blogs/${req.body.id}/edit`);
-    }
+    const attributes = {user: user._id, ...req.body};
+    await Blog.validate(attributes);
+    await Blog.findByIdAndUpdate(attributes.id, attributes);
+
+    req.flash('success', 'The blog was updated successfully');
+    res.redirect(`/blogs/${req.body.id}`);
+  } catch (error) {
+    req.flash('danger', `There was an error updating this blog: ${error}`);
+    res.redirect(`/blogs/${req.body.id}/edit`);
+  }
 };
 
-
 exports.delete = async (req, res) => {
-    try {
-          console.log(req.body);
-          await Blog.deleteOne({_id: req.body.id});
-          req.flash('success', 'The blog was deleted successfully');
-          res.redirect(`/blogs`);
-        } catch (error) {
-          req.flash('danger', `There was an error deleting this blog: ${error}`);
-          res.redirect(`/blogs`);
-        }
+  try {
+    await Blog.deleteOne({_id: req.body.id});
+    res.status(200).json({message: "Yay."});
+  } catch (error) {
+    res.status(400).jason({message: "There was an error deleting the blog"});
+  }
 };
 
 

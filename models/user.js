@@ -32,6 +32,9 @@ const UserSchema = new mongoose.Schema({
     }
 },{
     timestamps: true,
+    toJSON: {
+        getters: true
+    }
 });
 
 //Validation attributes
