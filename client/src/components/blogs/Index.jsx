@@ -14,14 +14,14 @@ const Index = function ({user}) {
     }, []);
 
     const getBlogs = async () =>{
-        const blogsResp = await Axios.get('/blogs');
+        const blogsResp = await Axios.get('/api/blogs');
         //console.log(blogsResp);
         if (blogsResp.status === 200) setBlogs(blogsResp.data);
     };
 
     const deleteBlog = async blog => {
         try {
-            const resp = await Axios.post('/blogs/delete', {
+            const resp = await Axios.post('/api/blogs/delete', {
                 id: blog._id
             });
 

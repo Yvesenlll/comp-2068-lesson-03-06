@@ -19,7 +19,7 @@ const New = function () {
       
       try {
           
-      const resp = await Axios.post('/blogs', inputs);
+      const resp = await Axios.post('/api/blogs', inputs);
 
       if(resp.status === 200){
         toast("The blog was created successfully",{

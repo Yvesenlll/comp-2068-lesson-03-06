@@ -4,7 +4,7 @@ import { Container } from 'react-bootstrap';
 function About() {
     return(
         <Container className = "my-5">
-            <header class = "jumbotron">
+            <header className = "jumbotron">
                 <h1>ALL ABOUT ME</h1>
             </header>
 
